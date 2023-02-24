@@ -18,6 +18,7 @@ def train():
         folder = solve_folder_path(MODEL_SAVE_DIR)
 
         MODEL.save_weights(os.path.join(folder, f"model_{d['index']}.h5"))
+
         k_fold_history.append(history.history)
 
     return k_fold_history
