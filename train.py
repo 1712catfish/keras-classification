@@ -1,4 +1,4 @@
-from utils import list_valid_args, retrieve_global_variables
+from utils import list_valid_args, list_global_variables, args_global_dict
 
 
 def train():
@@ -10,13 +10,7 @@ def train():
     for d in DATA_GENERATOR:
         print(f"========== Fold {d['index']} ==========")
 
-        global_settings = retrieve_global_variables()
-
-        args_dict = dict()
-        for k in set(list_valid_args(MODEL.fit)).intersection((set(global_settings).union(set(d.keys())))):
-            args_dict[k] = global_settings.get(k, d.get(k, None))
-
-        history = MODEL.fit(**args_dict)
+        history = MODEL.fit(**args_global_dict(d))
 
         MODEL.save_weights(f"model_{d['index']}.h5")
         k_fold_history.append(history.history)

@@ -83,6 +83,17 @@ def intersect(*keys):
     return s
 
 
+def args_global_dict(func, d):
+    global_settings = list_global_variables()
+    settings = set(d).union(set([k.lower() for k in global_settings]))
+    args_dict = dict()
+    for k in set(list_valid_args(func)).intersection(settings):
+        if k.upper() in global_settings:
+            args_dict[k] = eval(k.upper())
+        elif d.get(k, None) is not None:
+            args_dict[k] = d[k]
+    return args_dict
+
 """Hardware configuration"""
 
 
