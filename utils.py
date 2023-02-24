@@ -37,7 +37,7 @@ def list_global_constants(condition=None, filter_underscore=True, **kwargs):
 
 
 def filter_dict(condition, d):
-    return {k: v for k, v in d.items() if condition(k)}
+    return {k: v for k, v in d.items() if condition(v)}
 
 
 def list_valid_args(func):
