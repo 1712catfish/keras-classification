@@ -1,7 +1,7 @@
 from utils import list_valid_args, retrieve_global_variables
 
 
-def trainer():
+def train():
     k_fold_history = []
     for d in DATA_GENERATOR:
         print(f"========== Fold {d['index']} ==========")
