@@ -26,6 +26,4 @@ def train():
 
         k_fold_history.append(history.history)
 
-        break
-
     return k_fold_history
