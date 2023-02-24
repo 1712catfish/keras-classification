@@ -40,7 +40,7 @@ def read_tfrecord(example, labeled=True):
 
 
 def create_dataset(filenames, labeled=True, ignore_order=False, shuffle=False,
-                   repeat=False, cache=False, distribute=False):
+                   repeat=False, cache=False, distribute=False, buffer_size=42):
     AUTOTUNE = tf.data.experimental.AUTOTUNE
 
     dataset = tf.data.TFRecordDataset(filenames, num_parallel_reads=AUTOTUNE)
@@ -53,7 +53,7 @@ def create_dataset(filenames, labeled=True, ignore_order=False, shuffle=False,
     dataset = dataset.map(lambda x: read_tfrecord(x, labeled=labeled), num_parallel_calls=AUTOTUNE)
 
     if shuffle:
-        dataset = dataset.shuffle(2048, seed=SEED)
+        dataset = dataset.shuffle(buffer_size, seed=SEED)
 
     if repeat:
         dataset = dataset.repeat()
