@@ -9,7 +9,7 @@ def train():
         global_settings = retrieve_global_variables()
 
         args_dict = dict()
-        for k in list_valid_args(MODEL.fit):
+        for k in set(list_valid_args(MODEL.fit)).intersection((set(global_settings).union(set(d.keys())))):
             args_dict[k] = global_settings.get(k, d.get(k, None))
 
         history = MODEL.fit(**args_dict)
