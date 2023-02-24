@@ -50,3 +50,5 @@ MIXED_PRECISION = "mixed_float16"
 #     BATCH_SIZE = 256
 
 DATA_GENERATOR = "k_fold_data_generator"
+
+MODEL_SAVE_DIR = "./exp"

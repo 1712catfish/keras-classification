@@ -1,4 +1,6 @@
 import inspect
+import os
+
 import tensorflow as tf
 from matplotlib import pyplot as plt
 import numpy as np
@@ -94,6 +96,7 @@ def retrieve_args_global_dict(func, d):
             args_dict[k] = d[k]
     return args_dict
 
+
 """Hardware configuration"""
 
 
@@ -170,3 +173,14 @@ def plot_history_metric(history, metric, f_best=np.argmax, ylim=None, yscale=Non
     plt.legend(prop={'size': 10})
     plt.grid()
     plt.show()
+
+
+def solve_folder_path(base):
+    if not os.path.exists(base):
+        os.makedirs(base)
+        return base
+    for i in range(1000):
+        folder = os.path.join(base, f'{i:04d}')
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+            return folder
