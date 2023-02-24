@@ -1,4 +1,3 @@
-from keras_cv_attention_models import *
 from keras.layers import *
 from keras import *
 from keras_cv_attention_models import *

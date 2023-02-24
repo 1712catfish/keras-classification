@@ -39,12 +39,12 @@ VERBOSE = 1
 
 MIXED_PRECISION = "mixed_float16"
 
-seed_everything(SEED)
-TPU, STRATEGY = solve_hardware(mixed_precision=MIXED_PRECISION)
+# seed_everything(SEED)
+# TPU, STRATEGY = solve_hardware(mixed_precision=MIXED_PRECISION)
 
-if TPU is None:
-    BATCH_SIZE = 32
-else:
-    BATCH_SIZE = 256
+# if TPU is None:
+#     BATCH_SIZE = 32
+# else:
+#     BATCH_SIZE = 256
 
 DATA_GENERATOR = "k_fold_data_generator"
