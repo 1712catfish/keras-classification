@@ -1,6 +1,7 @@
 import os
 
-from utils import retrieve_args_global_dict, solve_folder_path, is_primitive, filter_dict
+from utils import retrieve_args_global_dict, solve_folder_path
+
 
 
 def train():
@@ -15,7 +16,7 @@ def train():
 
         kwargs = retrieve_args_global_dict(MODEL.fit, d)
 
-        print(filter_dict(is_primitive, kwargs))
+        print(kwargs)
 
         history = MODEL.fit(**kwargs)
 
