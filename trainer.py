@@ -12,6 +12,8 @@ def train():
         for k in set(list_valid_args(MODEL.fit)).intersection((set(global_settings).union(set(d.keys())))):
             args_dict[k] = global_settings.get(k, d.get(k, None))
 
+        print(1)
+
         history = MODEL.fit(**args_dict)
 
         MODEL.save_weights(f"model_{d['index']}.h5")

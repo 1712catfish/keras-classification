@@ -76,10 +76,10 @@ def solve_dataset(index, train_ids, val_ids):
 
     for i in train_ids:
         for k in range(len(GCS_PATH_TRAIN_AUG)):
-            train_filenames += tf.io.gfile.glob(os.path.join(GCS_PATH_TRAIN_AUG[k], f"fold_{FOLDS[i]}", '*.tfrec'))
+            train_filenames += tf.io.gfile.glob(os.path.join(GCS_PATH_TRAIN_AUG[k], f"fold_{i}", '*.tfrec'))
 
     for i in val_ids:
-        val_filenames += tf.io.gfile.glob(os.path.join(GCS_PATH_TEST_NO_AUG, f"fold_{FOLDS[i]}", '*.tfrec'))
+        val_filenames += tf.io.gfile.glob(os.path.join(GCS_PATH_TEST_NO_AUG, f"fold_{i}", '*.tfrec'))
 
     np.random.shuffle(train_filenames)
     train_dataset = create_dataset(train_filenames, shuffle=True, repeat=True)
