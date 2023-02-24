@@ -13,6 +13,8 @@ def train():
     for d in DATA_GENERATOR:
         print(f"========== Fold {d['index']} ==========")
 
+        print(retrieve_args_global_dict(MODEL.fit, d))
+
         history = MODEL.fit(**retrieve_args_global_dict(MODEL.fit, d))
 
         folder = solve_folder_path(MODEL_SAVE_DIR)
@@ -20,5 +22,7 @@ def train():
         MODEL.save_weights(os.path.join(folder, f"model_{d['index']}.h5"))
 
         k_fold_history.append(history.history)
+
+        break
 
     return k_fold_history
