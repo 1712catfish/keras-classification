@@ -21,4 +21,4 @@ def train():
         MODEL.save_weights(f"model_{d['index']}.h5")
         k_fold_history.append(history.history)
 
-    return MODEL, k_fold_history
+    return k_fold_history
