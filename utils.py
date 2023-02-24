@@ -9,6 +9,8 @@ import numpy as np
 
 
 def list_global_variables(condition=None, filter_underscore=True, **kwargs):
+    global globals
+
     def cond(k):
         if k == "list_global_variables":
             return False

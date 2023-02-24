@@ -95,7 +95,7 @@ def solve_dataset(index, train_ids, val_ids):
         train_size=train_size,
         validation_data=val_dataset,
         val_size=val_size,
-        steps_per_epoch=train_size // BATCH_SIZE,
+        steps_per_epoch=train_size // BATCH_SIZE // 10,
         validation_steps=val_size // BATCH_SIZE,
     )
 
