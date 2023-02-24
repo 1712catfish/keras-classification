@@ -36,6 +36,10 @@ def list_global_constants(condition=None, filter_underscore=True, **kwargs):
     return list_global_variables(condition=cond, filter_underscore=filter_underscore, **kwargs)
 
 
+def filter_dict(condition, d):
+    return {k: v for k, v in d.items() if condition(k)}
+
+
 def list_valid_args(func):
     return list(inspect.signature(func).parameters.keys())
 
@@ -186,3 +190,7 @@ def solve_folder_path(base):
         if not os.path.exists(folder):
             os.makedirs(folder)
             return folder
+
+
+def is_primitive(x):
+    return isinstance(x, (int, float, str, bool))

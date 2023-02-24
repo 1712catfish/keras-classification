@@ -1,6 +1,6 @@
 import os
 
-from utils import retrieve_args_global_dict, solve_folder_path
+from utils import retrieve_args_global_dict, solve_folder_path, is_primitive, filter_dict
 
 
 def train():
@@ -13,9 +13,11 @@ def train():
     for d in DATA_GENERATOR():
         print(f"========== Fold {d['index']} ==========")
 
-        print(retrieve_args_global_dict(MODEL.fit, d))
+        kwargs = retrieve_args_global_dict(MODEL.fit, d)
 
-        history = MODEL.fit(**retrieve_args_global_dict(MODEL.fit, d))
+        print(filter_dict(is_primitive, kwargs))
+
+        history = MODEL.fit(**kwargs)
 
         folder = solve_folder_path(MODEL_SAVE_DIR)
 
