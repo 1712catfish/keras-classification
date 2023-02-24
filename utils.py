@@ -86,9 +86,7 @@ def intersect(*keys):
 """Hardware configuration"""
 
 
-def solve_hardware(mixed_precision="mixed_float16"):
-    tf.keras.mixed_precision.set_global_policy(mixed_precision)
-
+def solve_hardware():
     try:
         tpu = tf.distribute.cluster_resolver.TPUClusterResolver()
         tf.config.experimental_connect_to_cluster(tpu)
@@ -113,8 +111,8 @@ def seed_everything(seed):
     # np.random.set_state(seed)
 
 
-# https://www.kaggle.com/code/markwijkhuizen/rsna-convnextv2-training-tensorflow-tpu?scriptVersionId=116484001
 def plot_history_metric(history, metric, f_best=np.argmax, ylim=None, yscale=None, yticks=None):
+    # https://www.kaggle.com/code/markwijkhuizen/rsna-convnextv2-training-tensorflow-tpu?scriptVersionId=116484001
     plt.figure(figsize=(20, 10))
 
     values = history[metric]
