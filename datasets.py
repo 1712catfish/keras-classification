@@ -4,8 +4,6 @@ import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import KFold
 
-# from settings import *
-
 
 def count_data_items(filenames):
     return np.sum([int(x[:-6].split('-')[-1]) for x in filenames])
