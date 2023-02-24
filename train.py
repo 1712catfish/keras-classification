@@ -4,6 +4,7 @@ from utils import solve_folder_path
 
 
 def train():
+    global retrieve_args_global_dict
     global MODEL
     global DATA_GENERATOR
     global MODEL_SAVE_DIR
