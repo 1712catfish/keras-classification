@@ -10,7 +10,7 @@ def train():
 
     k_fold_history = []
 
-    for d in DATA_GENERATOR:
+    for d in DATA_GENERATOR():
         print(f"========== Fold {d['index']} ==========")
 
         print(retrieve_args_global_dict(MODEL.fit, d))
