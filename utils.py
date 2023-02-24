@@ -108,4 +108,3 @@ def solve_hardware(mixed_precision="mixed_float16"):
 
 def seed_everything(seed):
     tf.random.set_seed(seed)
-    # np.random.set_state(seed)
