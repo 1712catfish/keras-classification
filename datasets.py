@@ -35,6 +35,7 @@ def read_tfrecord(example, labeled=True):
         label = [tf.cast(example[x], tf.float32) for x in CLASSES]
     else:
         label = example['image_name']
+    image = tf.image.resize(image, (IMSIZE, IMSIZE))
     return image, label
 
 
@@ -107,7 +108,7 @@ def k_fold_data_generator():
         yield solve_dataset(i, train_ids, val_ids)
 
 
-def solve_data_generator():
-    global DATA_GENERATOR
-    if DATA_GENERATOR == "k_fold_data_generator":
-        return k_fold_data_generator()
+# def solve_data_generator():
+#     global DATA_GENERATOR
+#     if DATA_GENERATOR == "k_fold_data_generator":
+#         return k_fold_data_generator()
