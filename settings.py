@@ -1,5 +1,3 @@
-from utils import seed_everything, solve_hardware
-
 GCS_PATH_TEST_NO_AUG = "gs://kds-3599f5f7526c2ea6ccd64f8ece7664680527d5f595413f935834d418"
 
 GCS_PATH_TRAIN_AUG = [
@@ -27,7 +25,7 @@ EPOCHS = 100
 
 FOLDS = 5
 
-USE_FOLDS = "__all__"
+USE_FOLDS = [1, 2, 3, 4, 5]
 
 PATIENCE = [5, 2]
 

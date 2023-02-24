@@ -1,8 +1,8 @@
 from keras.layers import *
 from keras import *
 from keras_cv_attention_models import *
+import tensorflow_addons as tfa
 
-from metrics import macro_f1
 from settings import *
 
 
@@ -22,11 +22,13 @@ def create_model():
     model.compile(
         loss="binary_crossentropy",
         optimizer="adam",
-        metrics=["accuracy", macro_f1()]
+        metrics=["accuracy", tfa.metrics.F1Score(
+            num_classes=NUM_CLASSES,
+            threshold=None,
+        )]
     )
 
     return model
-
 
 # model = create_model()
 # model.summary()

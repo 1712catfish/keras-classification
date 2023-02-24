@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import KFold
 
-from settings import *
+# from settings import *
 
 
 def count_data_items(filenames):
