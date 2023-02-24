@@ -108,5 +108,6 @@ def k_fold_data_generator():
 
 
 def solve_data_generator():
+    global DATA_GENERATOR
     if DATA_GENERATOR == "k_fold_data_generator":
         return k_fold_data_generator()
