@@ -7,7 +7,9 @@ GCS_PATH_TRAIN_AUG = [
     'gs://kds-ffb07abeeb2f1472d5d9372c3b6430af1e9849d671969eacb6fff939'
 ]
 
-IMSIZE = 600
+TF_RECORD_IMSIZE = 600
+
+IMSIZE = 224
 
 CLASSES = [
     'complex',

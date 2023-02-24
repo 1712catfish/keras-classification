@@ -11,7 +11,7 @@ def count_data_items(filenames):
 
 def decode_image(image_data):
     image = tf.image.decode_image(image_data, channels=3)
-    image = tf.reshape(image, [IMSIZE, IMSIZE, 3])
+    image = tf.reshape(image, [TF_RECORD_IMSIZE, TF_RECORD_IMSIZE, 3])
     image = tf.cast(image, tf.float32) / 255.
     return image
 
