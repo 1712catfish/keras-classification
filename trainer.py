@@ -2,9 +2,9 @@ from datasets import solve_data_generator
 from utils import list_valid_args, retrieve_global_variables
 
 
-def train():
+def k_fold_trainer():
     k_fold_history = []
-    for d in solve_data_generator():
+    for d in DATA_GENERATOR:
         print(f"========== Fold {d['index']} ==========")
 
         global_settings = retrieve_global_variables()
