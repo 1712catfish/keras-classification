@@ -83,7 +83,7 @@ def intersect(*keys):
     return s
 
 
-def args_global_dict(func, d):
+def retrieve_args_global_dict(func, d):
     global_settings = list_global_variables()
     settings = set(d).union(set([k.lower() for k in global_settings]))
     args_dict = dict()
