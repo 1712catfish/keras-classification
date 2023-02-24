@@ -1,7 +1,6 @@
 import os
 
-from utils import retrieve_args_global_dict, solve_folder_path
-
+from utils import solve_folder_path
 
 
 def train():
