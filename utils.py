@@ -1,5 +1,7 @@
 import inspect
 import tensorflow as tf
+from matplotlib import pyplot as plt
+import numpy as np
 
 """Argument parsing"""
 
@@ -109,3 +111,53 @@ def solve_hardware(mixed_precision="mixed_float16"):
 def seed_everything(seed):
     tf.random.set_seed(seed)
     # np.random.set_state(seed)
+
+
+# https://www.kaggle.com/code/markwijkhuizen/rsna-convnextv2-training-tensorflow-tpu?scriptVersionId=116484001
+def plot_history_metric(history, metric, f_best=np.argmax, ylim=None, yscale=None, yticks=None):
+    plt.figure(figsize=(20, 10))
+
+    values = history[metric]
+    N_EPOCHS = len(values)
+    val = 'val' in ''.join(history.keys())
+    # Epoch Ticks
+    if N_EPOCHS <= 20:
+        x = np.arange(1, N_EPOCHS + 1)
+    else:
+        x = [1, 5] + [10 + 5 * idx for idx in range((N_EPOCHS - 10) // 5 + 1)]
+
+    x_ticks = np.arange(1, N_EPOCHS + 1)
+
+    # Validation
+    if val:
+        val_values = history[f'val_{metric}']
+        val_argmin = f_best(val_values)
+        plt.plot(x_ticks, val_values, label=f'val')
+
+    # summarize history for accuracy
+    plt.plot(x_ticks, values, label=f'train')
+    argmin = f_best(values)
+    plt.scatter(argmin + 1, values[argmin], color='red', s=75, marker='o', label=f'train_best')
+    if val:
+        plt.scatter(val_argmin + 1, val_values[val_argmin], color='purple', s=75, marker='o', label=f'val_best')
+
+    plt.title(f'Model {metric}', fontsize=24, pad=10)
+    plt.ylabel(metric, fontsize=20, labelpad=10)
+
+    if ylim:
+        plt.ylim(ylim)
+
+    if yscale is not None:
+        plt.yscale(yscale)
+
+    if yticks is not None:
+        plt.yticks(yticks, fontsize=16)
+
+    plt.xlabel('epoch', fontsize=20, labelpad=10)
+    plt.tick_params(axis='x', labelsize=8)
+    plt.xticks(x, fontsize=16)  # set tick step to 1 and let x axis start at 1
+    plt.yticks(fontsize=16)
+
+    plt.legend(prop={'size': 10})
+    plt.grid()
+    plt.show()
