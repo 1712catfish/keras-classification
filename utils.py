@@ -5,6 +5,8 @@ import tensorflow as tf
 from matplotlib import pyplot as plt
 import numpy as np
 
+import pandas as pd
+
 """Argument parsing"""
 
 
@@ -196,3 +198,44 @@ def solve_folder_path(base):
         if not os.path.exists(folder):
             os.makedirs(folder)
             return folder
+
+
+def plot_training_results_2(folder="./exp"):
+
+    folder = solve_folder_path(folder)
+
+    global FOLDS
+
+    """
+    Plot training results
+    """
+    import matplotlib.pyplot as plt
+    import matplotlib.gridspec as gridspec
+
+    fig = plt.figure(figsize=(32, 10), constrained_layout=True)
+    gs = gridspec.GridSpec(2, FOLDS, figure=fig)
+
+    for fold_idx in range(FOLDS):
+        tmp_log_dir = os.path.join(folder, f"fold{fold_idx}_logs/{CFG.model_name}/version_0")
+        metrics = pd.read_csv(os.path.join(tmp_log_dir, 'metrics.csv'))
+
+        train_acc = metrics['train_f1'].dropna().reset_index(drop=True)
+        valid_acc = metrics['valid_f1'].dropna().reset_index(drop=True)
+
+        ax = fig.add_subplot(gs[0, fold_idx])
+        ax.plot(train_acc, color="r", marker="o", label='train/f1')
+        ax.plot(valid_acc, color="b", marker="x", label='valid/f1')
+        ax.set_xlabel('Epoch', fontsize=24)
+        ax.set_ylabel('F1', fontsize=24)
+        ax.set_title(f'fold {fold_idx}')
+        ax.legend(loc='lower right', fontsize=18)
+
+        train_loss = metrics['train_loss'].dropna().reset_index(drop=True)
+        valid_loss = metrics['valid_loss'].dropna().reset_index(drop=True)
+
+        ax = fig.add_subplot(gs[1, fold_idx])
+        ax.plot(train_loss, color="r", marker="o", label='train/loss')
+        ax.plot(valid_loss, color="b", marker="x", label='valid/loss')
+        ax.set_ylabel('Loss', fontsize=24)
+        ax.set_xlabel('Epoch', fontsize=24)
+        ax.legend(loc='upper right', fontsize=18)

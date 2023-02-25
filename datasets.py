@@ -112,3 +112,18 @@ def solve_data_generator():
     global DATA_GENERATOR
     if DATA_GENERATOR == "k_fold_data_generator":
         return k_fold_data_generator()
+
+
+def solve_args(kwargs):
+    new_kwargs = kwargs
+    new_kwargs.target_size = (kwargs.image_size, kwargs.image_size)
+    new_kwargs.input_size = (kwargs.image_size, kwargs.image_size)
+    new_kwargs.input_shape = (kwargs.image_size, kwargs.image_size, kwargs.channels)
+    new_kwargs.validation_split = kwargs.split
+    new_kwargs.test_size = kwargs.split
+    new_kwargs.drop_out = kwargs.dropout
+    new_kwargs.random_state = kwargs.seed
+    return new_kwargs
+
+
+
