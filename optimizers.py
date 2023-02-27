@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
-from keras.callbacks import Callback
+from tensorflow.keras.callbacks import Callback
 
 
 class CosineAnnealer:
