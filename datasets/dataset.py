@@ -62,7 +62,6 @@ def train_tfrecord_dataset(
 
 def test_tfrecord_dataset(
         record_files,
-        image_size=260,
         repeat=False,
         cache=True,
         **kwargs
