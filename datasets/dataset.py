@@ -47,42 +47,6 @@ def tfrecord_dataset(
     return dataset
 
 
-def train_tfrecord_dataset(
-    record_files,
-    parse_fn=lambda example: example,
-    repeat=True,
-    cache=False,
-    batch_size=32,
-    seed=1712,
-):
-    return tfrecord_dataset(
-        record_files,
-        parse_fn=parse_fn,
-        repeat=repeat,
-        cache=cache,
-        batch_size=batch_size,
-        seed=seed
-    )
-
-
-def test_tfrecord_dataset(
-    record_files,
-    parse_fn=lambda example: example,
-    repeat=False,
-    cache=True,
-    batch_size=32,
-    seed=1712,
-):
-    return tfrecord_dataset(
-        record_files,
-        parse_fn=parse_fn,
-        repeat=repeat,
-        cache=cache,
-        batch_size=batch_size,
-        seed=seed
-    )
-
-
 def single_class_tfrec_ds(
         train_tfrec_files,
         classes,
@@ -109,21 +73,25 @@ def single_class_tfrec_ds(
     if parse_record_fn == "default":
         parse_record_fn = default_parse_record_fn
 
-    train_ds = train_tfrecord_dataset(
+    train_ds = tfrecord_dataset(
         train_tfrec_files,
-        parse_fn=lambda example: parse_record_fn(example, image_size=train_image_size),
-        seed=seed,
+        parse_fn=lambda example: parse_record_fn(example, train_image_size),
+        repeat=True,
+        cache=False,
         batch_size=batch_size,
+        seed=seed
     )
 
     if test_tfrec_files is None:
         return train_ds
 
-    val_ds = test_tfrecord_dataset(
+    val_ds = tfrecord_dataset(
         test_tfrec_files,
         parse_fn=lambda example: parse_record_fn(example, image_size=test_image_size),
-        seed=seed,
+        repeat=False,
+        cache=True,
         batch_size=batch_size,
+        seed=seed,
     )
 
     return train_ds, val_ds
