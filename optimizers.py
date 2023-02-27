@@ -165,7 +165,7 @@ class LRFinder(Callback):
         ax.plot(self.lrs, self.losses)
 
 
-class Lion(tf.keras.optimizers.legacy.Optimizer):
+class Lion(tf.keras.optimizers.Optimizer):
     r"""Optimizer that implements the Lion algorithm."""
 
     def __init__(self,
