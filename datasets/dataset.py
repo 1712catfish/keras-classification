@@ -15,6 +15,7 @@ def tfrecord_dataset(
         distribute=False,
         buffer_size=42,
         strategy=None,
+        augment=None,
 ):
     """Assume dataset is parsed from tfrecord files"""
 
@@ -31,6 +32,9 @@ def tfrecord_dataset(
         dataset = dataset.shuffle(buffer_size, seed=seed)
 
     dataset = dataset.batch(batch_size)
+
+    if augment is not None:
+        dataset = dataset.map(augment, num_parallel_calls=AUTOTUNE)
 
     if cache:
         dataset = dataset.cache()
@@ -55,6 +59,7 @@ def single_class_tfrec_ds(
         batch_size=32,
         seed=1712,
         parse_record_fn="default",
+        augment=None,
 ):
     def default_parse_record_fn(example, imsize):
         example = tf.io.parse_single_example(example, {
@@ -78,7 +83,8 @@ def single_class_tfrec_ds(
         repeat=True,
         cache=False,
         batch_size=batch_size,
-        seed=seed
+        seed=seed,
+        augment=augment,
     )
 
     if test_tfrec_files is None:
