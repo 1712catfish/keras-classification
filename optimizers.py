@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow.keras.callbacks import Callback
+from tensorflow.keras.optimizers import Optimizer
 
 
 class CosineAnnealer:
@@ -165,88 +166,93 @@ class LRFinder(Callback):
         ax.plot(self.lrs, self.losses)
 
 
-class Lion(tf.keras.optimizers.Optimizer):
-    r"""Optimizer that implements the Lion algorithm."""
+class Lion(Optimizer):
 
     def __init__(self,
                  learning_rate=0.0001,
                  beta_1=0.9,
-                 beta_2=0.99,
-                 wd=0,
-                 name='lion',
+                 beta_2=0.999,
+                 weight_decay=None,
+                 clipnorm=None,
+                 clipvalue=None,
+                 global_clipnorm=None,
+                 use_ema=False,
+                 ema_momentum=0.99,
+                 ema_overwrite_frequency=None,
+                 jit_compile=True,
+                 name='Lion',
                  **kwargs):
-        """Construct a new Lion optimizer."""
+        super(Lion, self).__init__(
+            name=name,
+            weight_decay=weight_decay,
+            clipnorm=clipnorm,
+            clipvalue=clipvalue,
+            global_clipnorm=global_clipnorm,
+            use_ema=use_ema,
+            ema_momentum=ema_momentum,
+            ema_overwrite_frequency=ema_overwrite_frequency,
+            jit_compile=jit_compile,
+            **kwargs
+        )
+        self._learning_rate = self._build_learning_rate(learning_rate)
+        self.beta_1 = beta_1
+        self.beta_2 = beta_2
+        self._built = False
+        self._momentums = []
 
-        super(Lion, self).__init__(name, **kwargs)
-        self._set_hyper('learning_rate', kwargs.get('lr', learning_rate))
-        self._set_hyper('beta_1', beta_1)
-        self._set_hyper('beta_2', beta_2)
-        self._set_hyper('wd', wd)
-
-    def _create_slots(self, var_list):
-        # Create slots for the first and second moments.
-        # Separate for-loops to respect the ordering of slot variables from v1.
+    def build(self, var_list):
+        super(Lion, self).build(var_list)
+        if hasattr(self, '_built') and self._built:
+            return
+        self._built = True
+        self._momentums = []
         for var in var_list:
-            self.add_slot(var, 'm')
+            self._momentums.append(self.add_variable_from_reference(
+                model_variable=var, variable_name='m'
+            ))
 
-    def _prepare_local(self, var_device, var_dtype, apply_state):
-        super(Lion, self)._prepare_local(var_device, var_dtype, apply_state)
+    def update_step(self, gradient, variable):
+        lr = tf.cast(self.learning_rate, variable.dtype)
+        var_key = self._var_key(variable)
+        m = self._momentums[self._index_dict[var_key]]
 
-        beta_1_t = tf.identity(self._get_hyper('beta_1', var_dtype))
-        beta_2_t = tf.identity(self._get_hyper('beta_2', var_dtype))
-        wd_t = tf.identity(self._get_hyper('wd', var_dtype))
-        lr = apply_state[(var_device, var_dtype)]['lr_t']
-        apply_state[(var_device, var_dtype)].update(
-            dict(
-                lr=lr,
-                beta_1_t=beta_1_t,
-                one_minus_beta_1_t=1 - beta_1_t,
-                beta_2_t=beta_2_t,
-                one_minus_beta_2_t=1 - beta_2_t,
-                wd_t=wd_t))
+        if isinstance(gradient, tf.IndexedSlices):
+            # Sparse gradients.
+            m.assign(m * self.beta_1)
+            m_scaled_g_values = gradient.values * (1 - self.beta_1)
+            m_t = m.scatter_add(
+                tf.IndexedSlices(
+                    m_scaled_g_values, gradient.indices
+                )
+            )
+            variable.assign_sub(lr * tf.math.sign(m_t))
 
-    @tf.function(jit_compile=True)
-    def _resource_apply_dense(self, grad, var, apply_state=None):
-        var_device, var_dtype = var.device, var.dtype.base_dtype
-        coefficients = ((apply_state or {}).get((var_device, var_dtype)) or
-                        self._fallback_apply_state(var_device, var_dtype))
-
-        m = self.get_slot(var, 'm')
-        var_t = var.assign_sub(
-            coefficients['lr_t'] *
-            (tf.math.sign(m * coefficients['beta_1_t'] +
-                          grad * coefficients['one_minus_beta_1_t']) +
-             var * coefficients['wd_t']))
-        with tf.control_dependencies([var_t]):
-            m.assign(m * coefficients['beta_2_t'] +
-                     grad * coefficients['one_minus_beta_2_t'])
-
-    @tf.function(jit_compile=True)
-    def _resource_apply_sparse(self, grad, var, indices, apply_state=None):
-        var_device, var_dtype = var.device, var.dtype.base_dtype
-        coefficients = ((apply_state or {}).get((var_device, var_dtype)) or
-                        self._fallback_apply_state(var_device, var_dtype))
-
-        m = self.get_slot(var, 'm')
-        m_t = m.assign(m * coefficients['beta_1_t'])
-        m_scaled_g_values = grad * coefficients['one_minus_beta_1_t']
-        m_t = m_t.scatter_add(tf.IndexedSlices(m_scaled_g_values, indices))
-        var_t = var.assign_sub(coefficients['lr'] *
-                               (tf.math.sign(m_t) + var * coefficients['wd_t']))
-
-        with tf.control_dependencies([var_t]):
-            m_t = m_t.scatter_add(tf.IndexedSlices(-m_scaled_g_values, indices))
-            m_t = m_t.assign(m_t * coefficients['beta_2_t'] /
-                             coefficients['beta_1_t'])
-            m_scaled_g_values = grad * coefficients['one_minus_beta_2_t']
-            m_t.scatter_add(tf.IndexedSlices(m_scaled_g_values, indices))
+            m_t = m_t.scatter_add(
+                tf.IndexedSlices(
+                    -m_scaled_g_values, gradient.indices
+                )
+            )
+            m_t = m_t.assign(m_t * self.beta_2 / self.beta_1)
+            m_scaled_g_values = gradient.values * (1 - self.beta_2)
+            m_t.scatter_add(
+                tf.IndexedSlices(
+                    m_scaled_g_values, gradient.indices
+                )
+            )
+        else:
+            # Dense gradients.
+            m_t = m * self.beta_1 + gradient * (1 - self.beta_1)
+            variable.assign_sub(
+                lr * tf.math.sign(m_t)
+            )
+            m.assign(m * self.beta_2 + gradient * (1 - self.beta_2))
 
     def get_config(self):
         config = super(Lion, self).get_config()
+
         config.update({
-            'learning_rate': self._serialize_hyperparameter('learning_rate'),
-            'beta_1': self._serialize_hyperparameter('beta_1'),
-            'beta_2': self._serialize_hyperparameter('beta_2'),
-            'wd': self._serialize_hyperparameter('wd'),
+            'learning_rate': self._serialize_hyperparameter(self._learning_rate),
+            'beta_1': self.beta_1,
+            'beta_2': self.beta_2
         })
         return config
