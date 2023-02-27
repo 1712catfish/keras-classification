@@ -15,6 +15,7 @@ def tfrecord_dataset(
         distribute=False,
         buffer_size=42,
         strategy=None,
+        **kwargs
 ):
     """Assume dataset is parsed from tfrecord files"""
 
