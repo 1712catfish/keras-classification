@@ -16,7 +16,7 @@ def train():
 
         kwargs = retrieve_args_global_dict(MODEL.fit, d)
 
-        print(kwargs)
+        # print(kwargs)
 
         history = MODEL.fit(**kwargs)
 
