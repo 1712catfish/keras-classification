@@ -15,7 +15,6 @@ def tfrecord_dataset(
         distribute=False,
         buffer_size=42,
         strategy=None,
-        image_size=None,
 ):
     """Assume dataset is parsed from tfrecord files"""
 
@@ -57,14 +56,14 @@ def single_class_tfrec_ds(
         seed=1712,
         parse_record_fn="default",
 ):
-    def default_parse_record_fn(example, image_size):
+    def default_parse_record_fn(example, imsize):
         example = tf.io.parse_single_example(example, {{
             "image": tf.io.FixedLenFeature([], tf.string),
             "label": tf.io.FixedLenFeature([], tf.int64),
         }})
 
         image = tf.image.decode_jpeg(example["image"], channels=3)
-        image = tf.image.resize(image, [image_size, image_size])
+        image = tf.image.resize(image, [imsize, imsize])
         image = tf.cast(image, tf.float32) / 255.
 
         label = tf.one_hot(example["label"], classes)
@@ -87,7 +86,7 @@ def single_class_tfrec_ds(
 
     val_ds = tfrecord_dataset(
         test_tfrec_files,
-        parse_fn=lambda example: parse_record_fn(example, image_size=test_image_size),
+        parse_fn=lambda example: parse_record_fn(example, test_image_size),
         repeat=False,
         cache=True,
         batch_size=batch_size,
