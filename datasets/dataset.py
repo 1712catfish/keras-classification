@@ -31,6 +31,9 @@ def tfrecord_dataset(
     if shuffle:
         dataset = dataset.shuffle(buffer_size, seed=seed)
 
+    if repeat:
+        dataset = dataset.repeat()
+
     dataset = dataset.batch(batch_size)
 
     if augment is not None:
@@ -38,9 +41,6 @@ def tfrecord_dataset(
 
     if cache:
         dataset = dataset.cache()
-
-    if repeat:
-        dataset = dataset.repeat()
 
     dataset = dataset.prefetch(AUTOTUNE)
 
