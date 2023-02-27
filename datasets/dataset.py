@@ -75,7 +75,7 @@ def single_class_tfrec_ds(
     train_ds = tfrecord_dataset(
         train_tfrec_files,
         parse_fn=lambda example: parse_record_fn(example, train_image_size),
-        repeat=False,
+        repeat=True,
         cache=False,
         batch_size=batch_size,
         seed=seed
