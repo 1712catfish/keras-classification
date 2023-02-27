@@ -5,7 +5,7 @@ AUTOTUNE = tf.data.AUTOTUNE
 
 def tfrecord_dataset(
         record_files,
-        parse_record_fn=lambda example: example,
+        parse_fn=lambda example: example,
         batch_size=32,
         seed=1712,
         shuffle=False,
@@ -16,13 +16,12 @@ def tfrecord_dataset(
         buffer_size=42,
         strategy=None,
         image_size=None,
-        **kwargs
 ):
     """Assume dataset is parsed from tfrecord files"""
 
     dataset = tf.data.TFRecordDataset(record_files, num_parallel_reads=tf.data.AUTOTUNE)
 
-    dataset = dataset.map(parse_record_fn, num_parallel_calls=AUTOTUNE)
+    dataset = dataset.map(parse_fn, num_parallel_calls=AUTOTUNE)
 
     if ignore_order:
         options = tf.data.Options()
@@ -50,29 +49,37 @@ def tfrecord_dataset(
 
 def train_tfrecord_dataset(
     record_files,
+    parse_fn=lambda example: example,
     repeat=True,
     cache=False,
-    **kwargs
+    batch_size=32,
+    seed=1712,
 ):
     return tfrecord_dataset(
         record_files,
+        parse_fn=parse_fn,
         repeat=repeat,
         cache=cache,
-        **kwargs
+        batch_size=batch_size,
+        seed=seed
     )
 
 
 def test_tfrecord_dataset(
     record_files,
+    parse_fn=lambda example: example,
     repeat=False,
     cache=True,
-    **kwargs
+    batch_size=32,
+    seed=1712,
 ):
     return tfrecord_dataset(
         record_files,
+        parse_fn=parse_fn,
         repeat=repeat,
         cache=cache,
-        **kwargs
+        batch_size=batch_size,
+        seed=seed
     )
 
 
@@ -104,7 +111,7 @@ def single_class_tfrec_ds(
 
     train_ds = train_tfrecord_dataset(
         train_tfrec_files,
-        parse_record_fn=lambda example: parse_record_fn(example, image_size=train_image_size),
+        parse_fn=lambda example: parse_record_fn(example, image_size=train_image_size),
         seed=seed,
         batch_size=batch_size,
     )
@@ -114,7 +121,7 @@ def single_class_tfrec_ds(
 
     val_ds = test_tfrecord_dataset(
         test_tfrec_files,
-        parse_record_fn=lambda example: parse_record_fn(example, image_size=test_image_size),
+        parse_fn=lambda example: parse_record_fn(example, image_size=test_image_size),
         seed=seed,
         batch_size=batch_size,
     )
