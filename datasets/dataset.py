@@ -102,7 +102,6 @@ def single_class_tfrec_ds(
 
     train_ds = train_tfrecord_dataset(
         train_tfrec_files,
-        image_size=train_image_size,
         parse_record_fn=lambda example: parse_record_fn(example, image_size=train_image_size),
         seed=seed,
         batch_size=batch_size,
@@ -113,7 +112,6 @@ def single_class_tfrec_ds(
 
     val_ds = test_tfrecord_dataset(
         test_tfrec_files,
-        image_size=test_image_size,
         parse_record_fn=lambda example: parse_record_fn(example, image_size=test_image_size),
         seed=seed,
         batch_size=batch_size,
