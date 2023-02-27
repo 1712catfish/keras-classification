@@ -2,7 +2,6 @@ import tensorflow as tf
 
 AUTOTUNE = tf.data.AUTOTUNE
 
-
 def tfrecord_dataset(
         record_files,
         parse_record_fn=lambda example: example,
@@ -48,14 +47,12 @@ def tfrecord_dataset(
 
 def train_tfrecord_dataset(
         record_files,
-        image_size=224,
         repeat=True,
         cache=False,
         **kwargs
 ):
     return tfrecord_dataset(
         record_files,
-        image_size=image_size,
         repeat=repeat,
         cache=cache,
         **kwargs
@@ -71,7 +68,6 @@ def test_tfrecord_dataset(
 ):
     return tfrecord_dataset(
         record_files,
-        image_size=image_size,
         repeat=repeat,
         cache=cache,
         **kwargs
