@@ -2,6 +2,7 @@ import tensorflow as tf
 
 AUTOTUNE = tf.data.AUTOTUNE
 
+
 def tfrecord_dataset(
         record_files,
         parse_record_fn=lambda example: example,
