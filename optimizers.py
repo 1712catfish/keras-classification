@@ -167,7 +167,6 @@ class LRFinder(Callback):
 
 
 class Lion(Optimizer):
-
     def __init__(self,
                  learning_rate=0.0001,
                  beta_1=0.9,
