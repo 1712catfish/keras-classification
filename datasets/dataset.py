@@ -57,10 +57,10 @@ def single_class_tfrec_ds(
         parse_record_fn="default",
 ):
     def default_parse_record_fn(example, imsize):
-        example = tf.io.parse_single_example(example, {{
+        example = tf.io.parse_single_example(example, {
             "image": tf.io.FixedLenFeature([], tf.string),
             "label": tf.io.FixedLenFeature([], tf.int64),
-        }})
+        })
 
         image = tf.image.decode_jpeg(example["image"], channels=3)
         image = tf.image.resize(image, [imsize, imsize])
