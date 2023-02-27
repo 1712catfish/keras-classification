@@ -5,8 +5,7 @@ AUTOTUNE = tf.data.AUTOTUNE
 
 def tfrecord_dataset(
         record_files,
-        parse_record_fn=lambda example, image_size: example,
-        image_size=224,
+        parse_record_fn=lambda example: example,
         batch_size=32,
         seed=1712,
         shuffle=False,
@@ -21,7 +20,7 @@ def tfrecord_dataset(
 
     dataset = tf.data.TFRecordDataset(record_files, num_parallel_reads=tf.data.AUTOTUNE)
 
-    dataset = dataset.map(lambda example: parse_record_fn(example, image_size), num_parallel_calls=AUTOTUNE)
+    dataset = dataset.map(parse_record_fn, num_parallel_calls=AUTOTUNE)
 
     if ignore_order:
         options = tf.data.Options()
