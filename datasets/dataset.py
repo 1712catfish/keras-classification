@@ -47,10 +47,10 @@ def tfrecord_dataset(
 
 
 def train_tfrecord_dataset(
-        record_files,
-        repeat=True,
-        cache=False,
-        **kwargs
+    record_files,
+    repeat=True,
+    cache=False,
+    **kwargs
 ):
     return tfrecord_dataset(
         record_files,
@@ -61,10 +61,10 @@ def train_tfrecord_dataset(
 
 
 def test_tfrecord_dataset(
-        record_files,
-        repeat=False,
-        cache=True,
-        **kwargs
+    record_files,
+    repeat=False,
+    cache=True,
+    **kwargs
 ):
     return tfrecord_dataset(
         record_files,
