@@ -65,3 +65,10 @@ def vh_reduce(inputs):
     x = DepthwiseConv2D(kernel_size=(w, 1), padding="valid", activation="linear")(x)
     x = BatchNormalization()(x)
     return x
+
+
+def soft_cce(y_true, y_pred, alpha=0.0, **kwargs):
+    y_true = tf.cast(y_true, tf.float32)
+    y_true = (1-alpha) * y_true + alpha * y_pred
+    return tf.keras.losses.CategoricalCrossentropy(**kwargs)(y_true, y_pred)
+
