@@ -27,19 +27,22 @@ def init_weights(m):
     return m
 
 
-def conv_next_v2_block(dim, drop_path=0.):
-    def res(inputs):
-        f = Sequential([
-            DepthwiseConv2D(dim, kernel_size=7, strides=1, padding=3, use_bias=False),
-            LayerNormalization(),
-            Dense(4 * dim),
-            Activation('gelu'),
-            GRN(4 * dim),
-            Dense(dim),
-        ])
-        return tfa.layers.StochasticDepth(drop_path=drop_path)([inputs, f(inputs)])
+class ConvNextV2_Block(Layer):
+    def __init__(self, dim, drop_path=0.):
+        super().__init__()
+        self.dim = dim
+        self.drop_path = drop_path
 
-    return res
+    def call(self, inputs, *args, **kwargs):
+        f = Sequential([
+            DepthwiseConv2D(self.dim, kernel_size=7, strides=1, padding=3, use_bias=False),
+            LayerNormalization(),
+            Dense(4 * self.dim),
+            Activation('gelu'),
+            GRN(4 * self.dim),
+            Dense(self.dim),
+        ])
+        return tfa.layers.StochasticDepth(drop_path=self.drop_path)([inputs, f(inputs)])
 
 
 def meta_conv_next_v2(
@@ -56,7 +59,7 @@ def meta_conv_next_v2(
         dims = [96, 192, 384, 768]
 
     if block is None:
-        block = conv_next_v2_block
+        block = ConvNextV2_Block
 
     stem = Sequential([
         Conv2D(dims[0], 4, 4),
