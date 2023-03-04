@@ -42,7 +42,7 @@ class ConvNextV2_Block(Layer):
             GRN(4 * self.dim),
             Dense(self.dim),
         ])
-        return tfa.layers.StochasticDepth(drop_path=self.drop_path)([inputs, f(inputs)])
+        return tfa.layers.StochasticDepth(self.drop_path)([inputs, f(inputs)])
 
 
 def meta_conv_next_v2(
