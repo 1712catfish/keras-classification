@@ -1,0 +1,192 @@
+import keras
+import numpy as np
+import tensorflow as tf
+from keras import Sequential
+from keras.initializers.initializers_v2 import TruncatedNormal
+from keras.layers import *
+import tensorflow_addons as tfa
+from tensorflow.python.keras.models import Model
+
+
+def GRN(dim):
+    gamma = tf.Variable(tf.zeros((1, 1, 1, dim)))
+    beta = tf.Variable(tf.zeros((1, 1, 1, dim)))
+
+    def res(x):
+        Gx = tf.norm(x, ord=2, axis=(1, 2), keepdims=True)
+        Nx = Gx / (tf.reduce_mean(Gx, axis=-1, keepdims=True) + 1e-6)
+        return tf.math.multiply(gamma, (x * Nx)) + beta + x
+
+    return res
+
+
+def init_weights(m):
+    for layer in m.layers:
+        if isinstance(layer, (Conv2D, Dense)):
+            layer.kernel_initializer = TruncatedNormal(mean=0., stddev=.02)
+    return m
+
+
+def conv_next_v2_block(dim, drop_path=0.):
+    def res(inputs):
+        f = Sequential([
+            DepthwiseConv2D(dim, kernel_size=7, strides=1, padding=3, use_bias=False),
+            LayerNormalization(),
+            Dense(4 * dim),
+            Activation('gelu'),
+            GRN(4 * dim),
+            Dense(dim),
+        ])
+        return tfa.layers.StochasticDepth(drop_path=drop_path)([inputs, f(inputs)])
+
+    return res
+
+
+def meta_conv_next_v2(
+        block=None,
+        depths=None,
+        dims=None,
+        drop_path_rate=0.,
+        **kwargs
+):
+    if depths is None:
+        depths = [3, 3, 9, 3]
+
+    if dims is None:
+        dims = [96, 192, 384, 768]
+
+    if block is None:
+        block = conv_next_v2_block
+
+    stem = Sequential([
+        Conv2D(dims[0], 4, 4),
+        LayerNormalization()
+    ])
+
+    downsample_layers = [stem]
+    for dim in dims[1:]:
+        downsample_layer = Sequential([
+            LayerNormalization(),
+            Conv2D(dim, 2, 2),
+        ])
+        downsample_layers.append(downsample_layer)
+
+    stages = []
+    dp_rates = np.linspace(0, drop_path_rate, sum(depths))
+    cur = 0
+    for i, dim, depth in enumerate(zip(dims, depths)):
+        stage = Sequential([
+            block(dim, dp_rates[cur + j])
+            for j in range(depth)
+        ])
+        cur += depth
+        stages.append(stage)
+
+    def res(inputs):
+        x = inputs
+        for downsample_layer, stage in zip(downsample_layers, stages):
+            x = downsample_layer(x)
+            x = stage(x)
+        return x
+
+    return res
+
+
+def meta_convnextv2_atto(**kwargs):
+    model = meta_conv_next_v2(depths=[2, 2, 6, 2], dims=[40, 80, 160, 320], **kwargs)
+    return model
+
+
+def meta_convnextv2_femto(**kwargs):
+    model = meta_conv_next_v2(depths=[2, 2, 6, 2], dims=[48, 96, 192, 384], **kwargs)
+    return model
+
+
+def meta_convnext_pico(**kwargs):
+    model = meta_conv_next_v2(depths=[2, 2, 6, 2], dims=[64, 128, 256, 512], **kwargs)
+    return model
+
+
+def meta_convnextv2_nano(**kwargs):
+    model = meta_conv_next_v2(depths=[2, 2, 8, 2], dims=[80, 160, 320, 640], **kwargs)
+    return model
+
+
+def meta_convnextv2_tiny(**kwargs):
+    model = meta_conv_next_v2(depths=[3, 3, 9, 3], dims=[96, 192, 384, 768], **kwargs)
+    return model
+
+
+def meta_convnextv2_base(**kwargs):
+    model = meta_conv_next_v2(depths=[3, 3, 27, 3], dims=[128, 256, 512, 1024], **kwargs)
+    return model
+
+
+def meta_convnextv2_large(**kwargs):
+    model = meta_conv_next_v2(depths=[3, 3, 27, 3], dims=[192, 384, 768, 1536], **kwargs)
+    return model
+
+
+def meta_convnextv2_huge(**kwargs):
+    model = meta_conv_next_v2(depths=[3, 3, 27, 3], dims=[352, 704, 1408, 2816], **kwargs)
+    return model
+
+
+def conv_next_v2(**kwargs):
+    return meta_conv_next_v2(block=conv_next_v2_block, **kwargs)
+
+
+def convnextv2_atto(**kwargs):
+    model = meta_convnextv2_atto(block=conv_next_v2_block, **kwargs)
+    return model
+
+
+def convnextv2_femto(**kwargs):
+    model = meta_convnextv2_femto(block=conv_next_v2_block, **kwargs)
+    return model
+
+
+def convnext_pico(**kwargs):
+    model = meta_convnext_pico(block=conv_next_v2_block, **kwargs)
+    return model
+
+
+def convnextv2_nano(**kwargs):
+    model = meta_convnextv2_nano(block=conv_next_v2_block, **kwargs)
+    return model
+
+
+def convnextv2_tiny(**kwargs):
+    model = meta_convnextv2_tiny(block=conv_next_v2_block, **kwargs)
+    return model
+
+
+def convnextv2_base(**kwargs):
+    model = meta_convnextv2_base(block=conv_next_v2_block, **kwargs)
+    return model
+
+
+def convnextv2_large(**kwargs):
+    model = meta_convnextv2_large(block=conv_next_v2_block, **kwargs)
+    return model
+
+
+def convnextv2_huge(**kwargs):
+    model = meta_convnextv2_huge(block=conv_next_v2_block, **kwargs)
+    return model
+
+
+def meta_create_conv_next_v2(
+        model=None,
+        image_size=512,
+        num_classes=1000,
+):
+    if model is None:
+        model = meta_convnextv2_base()
+
+    inputs = Input((image_size, image_size, 3))
+    x = model(inputs)
+    x = GlobalAveragePooling2D()(x)
+    x = LayerNormalization()(x)
+    x = Dense(num_classes, activation='softmax')(x)
+    return init_weights(Model(inputs, x))
