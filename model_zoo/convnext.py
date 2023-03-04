@@ -46,7 +46,7 @@ class ConvNextV2_Block(Layer):
 
 
 def meta_conv_next_v2(
-        block=None,
+        block=ConvNextV2_Block,
         depths=None,
         dims=None,
         drop_path_rate=0.,
