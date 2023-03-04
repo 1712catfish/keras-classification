@@ -34,10 +34,10 @@ def tfrecord_dataset(
     if repeat:
         dataset = dataset.repeat()
 
-    dataset = dataset.batch(batch_size)
-
     if augment is not None:
         dataset = dataset.map(augment, num_parallel_calls=AUTOTUNE)
+
+    dataset = dataset.batch(batch_size)
 
     if cache:
         dataset = dataset.cache()
