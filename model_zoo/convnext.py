@@ -17,7 +17,7 @@ class GRN(Layer):
     def call(self, x, *args, **kwargs):
         Gx = tf.norm(x, ord=2, axis=(1, 2), keepdims=True)
         Nx = Gx / (tf.reduce_mean(Gx, axis=-1, keepdims=True) + 1e-6)
-        return self.gamma * (x * Nx) + self.beta + x
+        return tf.cast(self.gamma, x.dtype) * (x * Nx) + tf.cast(self.beta, x.dtype) + x
 
 
 def init_weights(m):
