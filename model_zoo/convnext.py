@@ -8,16 +8,16 @@ import tensorflow_addons as tfa
 from tensorflow.python.keras.models import Model
 
 
-def GRN(dim):
-    gamma = tf.Variable(lambda: tf.zeros((1, 1, 1, dim)))
-    beta = tf.Variable(lambda: tf.zeros((1, 1, 1, dim)))
+class GRN(Layer):
+    def __init__(self, dim):
+        super().__init__(self)
+        self.gamma = tf.Variable(lambda: tf.zeros((1, 1, 1, dim)))
+        self.beta = tf.Variable(lambda: tf.zeros((1, 1, 1, dim)))
 
-    def res(x):
+    def call(self, x, *args, **kwargs):
         Gx = tf.norm(x, ord=2, axis=(1, 2), keepdims=True)
         Nx = Gx / (tf.reduce_mean(Gx, axis=-1, keepdims=True) + 1e-6)
-        return tf.math.multiply(gamma, (x * Nx)) + beta + x
-
-    return res
+        return self.gamma * (x * Nx) + self.beta + x
 
 
 def init_weights(m):
