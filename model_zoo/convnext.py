@@ -74,7 +74,7 @@ def meta_conv_next_v2(
     stages = []
     dp_rates = np.linspace(0, drop_path_rate, sum(depths))
     cur = 0
-    for i, dim, depth in enumerate(zip(dims, depths)):
+    for i, (dim, depth) in enumerate(zip(dims, depths)):
         stage = Sequential([
             block(dim, dp_rates[cur + j])
             for j in range(depth)
