@@ -35,7 +35,7 @@ class ConvNextV2_Block(Layer):
 
     def call(self, inputs, *args, **kwargs):
         f = Sequential([
-            DepthwiseConv2D(kernel_size=7, strides=1, padding=3, use_bias=False),
+            DepthwiseConv2D(kernel_size=7, strides=1, padding='same', use_bias=False),
             LayerNormalization(),
             Dense(4 * self.dim),
             Activation('gelu'),
