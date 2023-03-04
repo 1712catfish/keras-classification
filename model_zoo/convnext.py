@@ -58,9 +58,6 @@ def meta_conv_next_v2(
     if dims is None:
         dims = [96, 192, 384, 768]
 
-    if block is None:
-        block = ConvNextV2_Block
-
     stem = Sequential([
         Conv2D(dims[0], 4, 4),
         LayerNormalization()
@@ -136,46 +133,46 @@ def meta_convnextv2_huge(**kwargs):
 
 
 def conv_next_v2(**kwargs):
-    return meta_conv_next_v2(block=conv_next_v2_block, **kwargs)
+    return meta_conv_next_v2(block=ConvNextV2_Block, **kwargs)
 
 
 def convnextv2_atto(**kwargs):
-    model = meta_convnextv2_atto(block=conv_next_v2_block, **kwargs)
+    model = meta_convnextv2_atto(block=ConvNextV2_Block, **kwargs)
     return model
 
 
 def convnextv2_femto(**kwargs):
-    model = meta_convnextv2_femto(block=conv_next_v2_block, **kwargs)
+    model = meta_convnextv2_femto(block=ConvNextV2_Block, **kwargs)
     return model
 
 
 def convnext_pico(**kwargs):
-    model = meta_convnext_pico(block=conv_next_v2_block, **kwargs)
+    model = meta_convnext_pico(block=ConvNextV2_Block, **kwargs)
     return model
 
 
 def convnextv2_nano(**kwargs):
-    model = meta_convnextv2_nano(block=conv_next_v2_block, **kwargs)
+    model = meta_convnextv2_nano(block=ConvNextV2_Block, **kwargs)
     return model
 
 
 def convnextv2_tiny(**kwargs):
-    model = meta_convnextv2_tiny(block=conv_next_v2_block, **kwargs)
+    model = meta_convnextv2_tiny(block=ConvNextV2_Block, **kwargs)
     return model
 
 
 def convnextv2_base(**kwargs):
-    model = meta_convnextv2_base(block=conv_next_v2_block, **kwargs)
+    model = meta_convnextv2_base(block=ConvNextV2_Block, **kwargs)
     return model
 
 
 def convnextv2_large(**kwargs):
-    model = meta_convnextv2_large(block=conv_next_v2_block, **kwargs)
+    model = meta_convnextv2_large(block=ConvNextV2_Block, **kwargs)
     return model
 
 
 def convnextv2_huge(**kwargs):
-    model = meta_convnextv2_huge(block=conv_next_v2_block, **kwargs)
+    model = meta_convnextv2_huge(block=ConvNextV2_Block, **kwargs)
     return model
 
 
