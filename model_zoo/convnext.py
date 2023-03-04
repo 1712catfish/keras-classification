@@ -9,8 +9,8 @@ from tensorflow.python.keras.models import Model
 
 
 def GRN(dim):
-    gamma = tf.Variable(tf.zeros((1, 1, 1, dim)))
-    beta = tf.Variable(tf.zeros((1, 1, 1, dim)))
+    gamma = tf.Variable(lambda: tf.zeros((1, 1, 1, dim)))
+    beta = tf.Variable(lambda: tf.zeros((1, 1, 1, dim)))
 
     def res(x):
         Gx = tf.norm(x, ord=2, axis=(1, 2), keepdims=True)
