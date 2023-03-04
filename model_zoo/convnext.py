@@ -10,7 +10,7 @@ from tensorflow.python.keras.models import Model
 
 class GRN(Layer):
     def __init__(self, dim, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.gamma = tf.Variable(lambda: tf.zeros((1, 1, 1, dim)))
         self.beta = tf.Variable(lambda: tf.zeros((1, 1, 1, dim)))
 
