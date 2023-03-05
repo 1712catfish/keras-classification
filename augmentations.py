@@ -158,7 +158,7 @@ def get_mat(rotation, shear, height_zoom, width_zoom, height_shift, width_shift)
     return K.dot(K.dot(rotation_matrix, shear_matrix), K.dot(zoom_matrix, shift_matrix))
 
 
-def transform(image, label):
+def rand_affine_transform(image, label):
     # input image - is one image of size [dim,dim,3] not a batch of [b,dim,dim,3]
     # output - image randomly rotated, sheared, zoomed, and shifted
     DIM = image.shape[0]
