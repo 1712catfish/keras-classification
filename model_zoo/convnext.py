@@ -182,7 +182,7 @@ def meta_create_conv_next_v2(
         num_classes=1000,
 ):
     if model is None:
-        model = meta_convnextv2_base()
+        meta_convnextv2_base(block=ConvNextV2_Block)
 
     inputs = Input((image_size, image_size, 3))
     x = model(inputs)
