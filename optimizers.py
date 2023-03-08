@@ -454,3 +454,5 @@ class SnapshotCallbackBuilder:
         cos_inner /= self.T // self.M
         cos_out = np.cos(cos_inner) + 1
         return float(self.alpha_zero / 2 * cos_out)
+
+
