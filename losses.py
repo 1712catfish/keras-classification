@@ -121,6 +121,7 @@ def MacroF1Loss(**kwargs):
 
 
 def PseudoContrastiveLoss(
+        emb_size,
         batch_size,
         margin=1.0,
         reduction=tf.keras.losses.Reduction.SUM,
@@ -143,6 +144,8 @@ def PseudoContrastiveLoss(
         y_sim_true = cossim(y_true_1, y_true_2)
 
         loss = contrastive_loss(y_sim_true, y_sim, sample_weight=sample_weight)
+
+        loss = loss / float(batch_size) / float(emb_size)
 
         # loss = contrastive_loss(
         #     y_pred_1, y_pred_2,
