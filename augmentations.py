@@ -197,8 +197,6 @@ def cutmix(image, label, batch_size, image_size, num_classes, PROBABILITY=1.0):
     # output - a batch of images with cutmix applied
     DIM = image_size[1]
 
-    print(image, label, batch_size, image_size, num_classes)
-
     imgs = []
     labs = []
     for j in range(batch_size):
