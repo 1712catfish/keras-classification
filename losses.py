@@ -123,7 +123,7 @@ def MacroF1Loss(**kwargs):
 def PseudoContrastiveLoss(
         batch_size,
         margin=1.0,
-        reduction=tf.keras.losses.Reduction.SUM_OVER_BATCH_SIZE,
+        reduction=tf.keras.losses.Reduction.SUM,
 ):
     contrastive_loss = tfa.losses.ContrastiveLoss(margin=margin, reduction=reduction, )
 

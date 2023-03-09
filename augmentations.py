@@ -195,7 +195,7 @@ def rand_affine_transform(image, label):
 def cutmix(image, label, batch_size, image_size, num_classes, PROBABILITY=1.0):
     # input image - is a batch of images of size [n,dim,dim,3] not a single image of [dim,dim,3]
     # output - a batch of images with cutmix applied
-    DIM = image_size[1]
+    DIM = image_size
 
     imgs = []
     labs = []
@@ -260,6 +260,7 @@ def mixup(image, label, batch_size, image_size, num_classes, PROBABILITY=1.0):
         labs.append((1 - a) * lab1 + a * lab2)
 
     # RESHAPE HACK SO TPU COMPILER KNOWS SHAPE OF OUTPUT TENSOR (maybe use Python typing instead?)
+
     image2 = tf.reshape(tf.stack(imgs), (batch_size, DIM, DIM, 3))
     label2 = tf.reshape(tf.stack(labs), (batch_size, num_classes))
     return image2, label2
@@ -285,3 +286,4 @@ def cut_mix_and_mix_up(image_batch, label_batch, batch_size, image_size, num_cla
     image4 = tf.reshape(tf.stack(imgs), (batch_size, DIM, DIM, 3))
     label4 = tf.reshape(tf.stack(labs), (batch_size, num_classes))
     return image4, label4
+
