@@ -267,7 +267,7 @@ def mixup(image, label, batch_size, image_size, num_classes, PROBABILITY=1.0):
     return image2, label2
 
 
-def cut_mix_and_mix_up(image_batch, label_batch, batch_size, image_size, num_classes, PROBABILITY=1.0):
+def cut_mix_and_mix_up(image_batch, label_batch, batch_size, image_size, num_classes):
     # THIS FUNCTION APPLIES BOTH CUTMIX AND MIXUP
     DIM = image_size
 
@@ -275,8 +275,8 @@ def cut_mix_and_mix_up(image_batch, label_batch, batch_size, image_size, num_cla
     CUTMIX_PROB = 0.666
     MIXUP_PROB = 0.666
     # FOR SWITCH PERCENT OF TIME WE DO CUTMIX AND (1-SWITCH) WE DO MIXUP
-    image2, label2 = cutmix(image_batch, label_batch, batch_size, image_size, CUTMIX_PROB)
-    image3, label3 = mixup(image_batch, label_batch, batch_size, image_size, MIXUP_PROB)
+    image2, label2 = cutmix(image_batch, label_batch, batch_size, image_size, num_classes, CUTMIX_PROB)
+    image3, label3 = mixup(image_batch, label_batch, batch_size, image_size, num_classes, MIXUP_PROB)
     imgs = []
     labs = []
     for j in range(batch_size):
