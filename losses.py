@@ -116,12 +116,15 @@ def generalized_contrastive_loss(
     return loss_scaling * (loss_align + lambda_weight * loss_dist_match)
 
 
+def MacroF1Loss(**kwargs):
+    return macro_double_soft_f1
+
+
 def PseudoContrastiveLoss(
         batch_size,
         margin=1.0,
         reduction=tf.keras.losses.Reduction.SUM_OVER_BATCH_SIZE,
 ):
-
     contrastive_loss = tfa.losses.ContrastiveLoss(margin=margin, reduction=reduction, )
 
     cossim = tf.keras.losses.CosineSimilarity(axis=-1, reduction=reduction, )
