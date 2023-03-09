@@ -1,4 +1,5 @@
 import tensorflow as tf
+import tensorflow_addons as tfa
 
 
 def macro_double_soft_f1(y, y_hat):
@@ -116,6 +117,7 @@ def generalized_contrastive_loss(
 
 
 def PseudoContrastiveLoss(
+        batch_size,
         margin=1.0,
         reduction=tf.keras.losses.Reduction.SUM_OVER_BATCH_SIZE,
 ):
@@ -125,8 +127,8 @@ def PseudoContrastiveLoss(
     cossim = tf.keras.losses.CosineSimilarity(axis=-1, reduction=reduction, )
 
     def pseudo_contrastive_loss(y_true, y_pred, sample_weight=None):
-        indices_1 = tf.random.uniform([tf.shape(y_pred)[0]], minval=0, maxval=tf.shape(y_pred)[0], dtype=tf.int32)
-        indices_2 = tf.random.uniform([tf.shape(y_pred)[0]], minval=0, maxval=tf.shape(y_pred)[0], dtype=tf.int32)
+        indices_1 = tf.random.uniform([batch_size], minval=0, maxval=batch_size, dtype=tf.int32)
+        indices_2 = tf.random.uniform([batch_size], minval=0, maxval=batch_size, dtype=tf.int32)
 
         y_pred_1 = tf.gather(y_pred, indices_1)
         y_pred_2 = tf.gather(y_pred, indices_2)
