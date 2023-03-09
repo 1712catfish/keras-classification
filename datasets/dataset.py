@@ -103,8 +103,6 @@ def single_class_tfrec_ds(
         cache=True,
         batch_size=batch_size,
         seed=seed,
-        augment_batch=augment_batch,
-
     )
 
     return train_ds, val_ds
