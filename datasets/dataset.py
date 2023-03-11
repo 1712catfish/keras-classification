@@ -91,7 +91,7 @@ def single_class_tfrec_ds(
         cache=False,
         batch_size=batch_size,
         seed=seed,
-        shuffle=True,
+        shuffle=False,
         buffer_size=train_n_samples,
         augment=augment,
         augment_batch=augment_batch,
@@ -103,7 +103,7 @@ def single_class_tfrec_ds(
     val_ds = tfrecord_dataset(
         test_tfrec_files,
         parse_fn=lambda example: parse_record_fn(example, test_image_size),
-        repeat=False,
+        repeat=True,
         cache=True,
         batch_size=batch_size,
         seed=seed,
