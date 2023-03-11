@@ -30,7 +30,7 @@ def tfrecord_dataset(
         dataset = dataset.with_options(options)
 
     if shuffle:
-        dataset = dataset.shuffle(buffer_size, reshuffle_each_iteration=True, seed=seed)
+        dataset = dataset.shuffle(buffer_size if buffer_size else 1712, reshuffle_each_iteration=True, seed=seed)
 
     if repeat:
         dataset = dataset.repeat()
