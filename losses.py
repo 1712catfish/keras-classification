@@ -143,6 +143,8 @@ def PseudoContrastiveLoss(
         y_sim = cossim(y_pred_1, y_pred_2)
         y_sim_true = cossim(y_true_1, y_true_2)
 
+        print(y_sim, y_sim_true)
+
         loss = contrastive_loss(y_sim_true, y_sim, sample_weight=sample_weight)
 
         loss = loss / float(batch_size) / float(emb_size)
