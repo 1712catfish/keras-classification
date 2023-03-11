@@ -30,7 +30,7 @@ def tfrecord_dataset(
         dataset = dataset.with_options(options)
 
     if shuffle:
-        dataset = dataset.shuffle(buffer_size, seed=seed)
+        dataset = dataset.shuffle(buffer_size, reshuffle_each_iteration=True, seed=seed)
 
     if repeat:
         dataset = dataset.repeat()
@@ -58,6 +58,8 @@ def single_class_tfrec_ds(
         train_tfrec_files,
         classes,
         test_tfrec_files=None,
+        train_n_samples=None,
+        test_n_samples=None,
         train_image_size=224,
         test_image_size=260,
         batch_size=32,
@@ -89,6 +91,8 @@ def single_class_tfrec_ds(
         cache=False,
         batch_size=batch_size,
         seed=seed,
+        shuffle=True,
+        buffer_size=train_n_samples,
         augment=augment,
         augment_batch=augment_batch,
     )
