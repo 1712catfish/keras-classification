@@ -136,12 +136,12 @@ def solve_training_protocol(inputs, outputs, training_protocol="SAM"):
         return tf.keras.Model(inputs, outputs)
 
     if training_protocol.upper() == "SAM":
-        return model_surgery.SAMModel(inputs, outputs)
+        return model_surgery.SAMModel(inputs=inputs, outputs=outputs)
 
     if training_protocol.upper() == "AGC":
-        return AGCModel(tf.keras.Model(inputs, outputs))
+        return AGCModel(tf.keras.Model(inputs=inputs, outputs=outputs))
 
     if training_protocol.upper() == "SAM+AGC":
-        return SAMModelWithAGC(inputs, outputs)
+        return SAMModelWithAGC(inputs=inputs, outputs=outputs)
 
-    return tf.keras.Model(inputs, outputs)
+    return tf.keras.Model(inputs=inputs, outputs=outputs)
