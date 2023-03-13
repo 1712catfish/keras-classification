@@ -94,8 +94,6 @@ class SAMModelWithAGC(tf.keras.Model):
             y_pred = self(x, training=True)
             loss = self.compiled_loss(y, y_pred, sample_weight=sample_weight, regularization_losses=self.losses)
 
-        print(loss)
-
         trainable_vars = self.trainable_variables
         gradients = tape.gradient(loss, trainable_vars)
 
