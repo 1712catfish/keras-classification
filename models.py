@@ -97,6 +97,8 @@ class SAMModelWithAGC(tf.keras.Model):
         trainable_vars = self.trainable_variables
         gradients = tape.gradient(loss, trainable_vars)
 
+        print(gradients)
+
         norm = self.tf.linalg.global_norm(gradients)
         scale = self.rho / (norm + 1e-12)
         e_w_list = []
