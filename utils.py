@@ -201,7 +201,6 @@ def solve_folder_path(base):
 
 
 def plot_training_results_2(folder="./exp"):
-
     folder = solve_folder_path(folder)
 
     global FOLDS
@@ -216,7 +215,7 @@ def plot_training_results_2(folder="./exp"):
     gs = gridspec.GridSpec(2, FOLDS, figure=fig)
 
     for fold_idx in range(FOLDS):
-        tmp_log_dir = os.path.join(folder, f"fold{fold_idx}_logs/{CFG.model_name}/version_0")
+        tmp_log_dir = os.path.join(folder, f"fold{fold_idx}_logs/version_0")
         metrics = pd.read_csv(os.path.join(tmp_log_dir, 'metrics.csv'))
 
         train_acc = metrics['train_f1'].dropna().reset_index(drop=True)
@@ -239,3 +238,39 @@ def plot_training_results_2(folder="./exp"):
         ax.set_ylabel('Loss', fontsize=24)
         ax.set_xlabel('Epoch', fontsize=24)
         ax.legend(loc='upper right', fontsize=18)
+
+
+def display_result(history, model, i=0):
+    try:
+        history = history.history
+    except:
+        pass
+
+    try:
+        os.mkdir('res')
+    except:
+        pass
+
+    with open(f'res/report.txt', 'w+') as f:
+        f.write(f"acc: {max(history['val_acc'])}\n\n")
+        model.summary(print_fn=lambda x: f.write(x + '\n'))
+
+    model.save_weights(os.path.join('res', "model.h5"))
+
+    print(f"Acc: {100 * max(history['val_acc'])}")
+
+    plt.plot(history['acc'])
+    plt.plot(history['val_acc'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
+
+    plt.plot(history['loss'])
+    plt.plot(history['val_loss'])
+    plt.title('model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
