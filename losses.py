@@ -28,6 +28,7 @@ def macro_double_soft_f1(y, y_hat):
     macro_cost = tf.reduce_mean(cost)  # average on all labels
     return macro_cost
 
+macro_f1 = macro_double_soft_f1
 
 def stochastic_loss(losses):
     def res(y_true, y_pred):
