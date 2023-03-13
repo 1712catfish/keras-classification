@@ -101,10 +101,6 @@ class SAMModelWithAGC(tf.keras.Model):
         scale = self.rho / (norm + 1e-12)
         e_w_list = []
 
-        # adaptive gradient clipping
-        gradients = adaptive_clip_grad(trainable_vars, gradients,
-                                       clip_factor=self.clip_factor, eps=1e-7)
-
         for v, grad in zip(trainable_vars, gradients):
             e_w = grad * scale
             v.assign_add(e_w)
