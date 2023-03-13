@@ -136,7 +136,7 @@ class SAMModelWithAGC(tf.keras.Model):
         return return_metrics
 
 
-def solve_training_protocol(inputs, outputs, training_protocol="SAM"):
+def solve_training_protocol(inputs, outputs, training_protocol="SAM+AGC"):
     if not training_protocol:
         print("Using vanilla training protocol")
         return tf.keras.Model(inputs, outputs)
@@ -157,3 +157,5 @@ def solve_training_protocol(inputs, outputs, training_protocol="SAM"):
 
     print("Using vanilla training protocol")
     return tf.keras.Model(inputs=inputs, outputs=outputs)
+
+
