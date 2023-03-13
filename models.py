@@ -133,15 +133,22 @@ class SAMModelWithAGC(tf.keras.Model):
 
 def solve_training_protocol(inputs, outputs, training_protocol="SAM"):
     if not training_protocol:
+        print("Using vanilla training protocol")
         return tf.keras.Model(inputs, outputs)
 
     if training_protocol.upper() == "SAM":
+        print("Training protocol: SAM")
+
         return model_surgery.SAMModel(inputs=inputs, outputs=outputs)
 
     if training_protocol.upper() == "AGC":
+        print("Training protocol: AGC")
+
         return AGCModel(tf.keras.Model(inputs=inputs, outputs=outputs))
 
     if training_protocol.upper() == "SAM+AGC":
+        print("Training protocol: SAM + AGC")
         return SAMModelWithAGC(inputs=inputs, outputs=outputs)
 
+    print("Using vanilla training protocol")
     return tf.keras.Model(inputs=inputs, outputs=outputs)
