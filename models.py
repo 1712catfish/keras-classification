@@ -128,7 +128,7 @@ class SAMModelWithAGC(tf.keras.Model):
                 return_metrics.update(result)
             else:
                 return_metrics[metric.name] = result
-        return
+        return return_metrics
 
 
 def solve_training_protocol(inputs, outputs, training_protocol="SAM"):
