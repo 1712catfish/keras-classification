@@ -162,6 +162,7 @@ def MetaConvNeXtV2(
         pretrained=None,
         model_name="convnext_v2",
         kwargs=None,
+        block=None,
 ):
     return MetaConvNeXt(**locals())
 
