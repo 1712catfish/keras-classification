@@ -146,36 +146,28 @@ def MetaConvNeXt(
     return model
 
 
-def ConvNeXtTiny(input_shape=(224, 224, 3), num_classes=1000, classifier_activation="softmax", pretrained="imagenet",
-                 **kwargs):
-    num_blocks = [3, 3, 9, 3]
-    out_channels = [96, 192, 384, 768]
-    return ConvNeXt(**locals(), model_name="convnext_tiny", **kwargs)
+def MetaConvNeXtV2(
+        num_blocks=[3, 3, 9, 3],
+        out_channels=[96, 192, 384, 768],
+        stem_width=-1,
+        layer_scale_init_value=0,  # 1e-6 for v1, 0 for v2
+        use_grn=True,  # False for v1, True for v2
+        head_init_scale=1.0,
+        input_shape=(224, 224, 3),
+        num_classes=1000,
+        activation="gelu",
+        drop_connect_rate=0.1,
+        classifier_activation="softmax",
+        dropout=0,
+        pretrained=None,
+        model_name="convnext_v2",
+        kwargs=None,
+):
+    return MetaConvNeXt(**locals())
 
 
-def ConvNeXtSmall(input_shape=(224, 224, 3), num_classes=1000, classifier_activation="softmax", pretrained="imagenet",
-                  **kwargs):
-    num_blocks = [3, 3, 27, 3]
-    out_channels = [96, 192, 384, 768]
-    return ConvNeXt(**locals(), model_name="convnext_small", **kwargs)
-
-
-def ConvNeXtBase(input_shape=(224, 224, 3), num_classes=1000, classifier_activation="softmax", pretrained="imagenet",
-                 **kwargs):
-    num_blocks = [3, 3, 27, 3]
-    out_channels = [128, 256, 512, 1024]
-    return ConvNeXt(**locals(), model_name="convnext_base", **kwargs)
-
-
-def ConvNeXtLarge(input_shape=(224, 224, 3), num_classes=1000, classifier_activation="softmax", pretrained="imagenet",
-                  **kwargs):
-    num_blocks = [3, 3, 27, 3]
-    out_channels = [192, 384, 768, 1536]
-    return ConvNeXt(**locals(), model_name="convnext_large", **kwargs)
-
-
-def ConvNeXtXlarge(input_shape=(224, 224, 3), num_classes=1000, classifier_activation="softmax",
-                   pretrained="imagenet21k-ft1k", **kwargs):
-    num_blocks = [3, 3, 27, 3]
-    out_channels = [256, 512, 1024, 2048]
-    return ConvNeXt(**locals(), model_name="convnext_xlarge", **kwargs)
+def MetaConvNeXtV2Nano(input_shape=(224, 224, 3), block=None, num_classes=1000, classifier_activation="softmax",
+                       pretrained="imagenet", **kwargs):
+    num_blocks = [2, 2, 8, 2]
+    out_channels = [80, 160, 320, 640]
+    return MetaConvNeXtV2(**locals(), model_name="convnext_v2_nano", **kwargs)
