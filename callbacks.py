@@ -4,7 +4,6 @@ import tensorflow as tf
 
 backend = tf.keras.backend
 
-
 class ReduceLROnPlateauHotRestart(tf.keras.callbacks.Callback):
     """Reduce learning rate when a metric has stopped improving.
     Models often benefit from reducing the learning rate by a factor
@@ -38,16 +37,16 @@ class ReduceLROnPlateauHotRestart(tf.keras.callbacks.Callback):
     """
 
     def __init__(
-        self,
-        monitor="val_loss",
-        factor=0.1,
-        patience=10,
-        verbose=0,
-        mode="auto",
-        min_delta=1e-4,
-        cooldown=0,
-        min_lr=0,
-        **kwargs,
+            self,
+            monitor="val_loss",
+            factor=0.1,
+            patience=10,
+            verbose=0,
+            mode="auto",
+            min_delta=1e-4,
+            cooldown=0,
+            min_lr=0,
+            **kwargs,
     ):
         super().__init__()
 
@@ -87,7 +86,7 @@ class ReduceLROnPlateauHotRestart(tf.keras.callbacks.Callback):
             )
             self.mode = "auto"
         if self.mode == "min" or (
-            self.mode == "auto" and "acc" not in self.monitor
+                self.mode == "auto" and "acc" not in self.monitor
         ):
             self.monitor_op = lambda a, b: np.less(a, b - self.min_delta)
             self.best = np.Inf
@@ -131,7 +130,7 @@ class ReduceLROnPlateauHotRestart(tf.keras.callbacks.Callback):
                         backend.set_value(self.model.optimizer.lr, new_lr)
                         if self.verbose > 0:
                             print(
-                                f"\nEpoch {epoch +1}: "
+                                f"\nEpoch {epoch + 1}: "
                                 "ReduceLROnPlateau reducing "
                                 f"learning rate to {new_lr}."
                             )
