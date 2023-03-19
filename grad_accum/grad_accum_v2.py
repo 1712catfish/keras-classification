@@ -55,7 +55,8 @@ def set_routines(
         batch_per_update, batch_size_per_replica,
         updates_per_epoch, valid_batches_per_epoch,
         valid_accuracy, valid_loss,
-        batch_size
+        batch_size,
+        **kwargs
 ):
     with strategy.scope():
 
