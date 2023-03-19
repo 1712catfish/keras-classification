@@ -56,7 +56,6 @@ def set_routines(
         updates_per_epoch, valid_batches_per_epoch,
         valid_accuracy, valid_loss,
         batch_size,
-        **kwargs
 ):
     with strategy.scope():
 
@@ -185,7 +184,8 @@ def train_grad_accum(
         train_ds, val_ds, train_n_samples, val_n_samples,
         train_accuracy, train_loss, valid_accuracy, valid_loss,
         batch_size_per_replica, batches_per_update,
-        steps, steps_per_epoch=None
+        steps,
+        steps_per_epoch=None
 ):
     batch_configuration = get_batch_config(
         strategy=strategy,
@@ -207,7 +207,12 @@ def train_grad_accum(
         train_loss=train_loss,
         valid_accuracy=valid_accuracy,
         valid_loss=valid_loss,
-        **batch_configuration,
+        batch_size_per_replica=batch_size_per_replica,
+        updates_per_epoch=UPDATES_PER_EPOCH,
+        valid_batches_per_epoch=VALID_BATCHES_PER_EPOCH,
+        batch_per_update=batches_per_update,
+        batch_size=batch_configuration["batch_size"],
+        update_size=batch_configuration["update_size"],
     )
 
     for step_i in range(steps):
