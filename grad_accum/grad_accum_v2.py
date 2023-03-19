@@ -195,9 +195,9 @@ def train_grad_accum(
 
     UPDATES_PER_EPOCH = batch_configuration["updates_per_epoch"]
     VALID_BATCHES_PER_EPOCH = batch_configuration["valid_batches_per_epoch"]
-    UPDATES_SIZE = batch_configuration["updates_size"]
+    UPDATE_SIZE = batch_configuration["update_size"]
 
-    train_ds, val_ds = get_ds(batch_size=UPDATES_SIZE)
+    train_ds, val_ds = get_ds(batch_size=UPDATE_SIZE)
 
     train_step_1_epoch, valid_step = set_routines(
         strategy=strategy,
