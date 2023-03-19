@@ -33,12 +33,18 @@ def get_batch_config(
     VALID_BATCHES_PER_EPOCH = n_val_samples // BATCH_SIZE
 
     return dict(
-        BATCH_SIZE_PER_REPLICA=BATCH_SIZE_PER_REPLICA,
-        BATCH_SIZE=BATCH_SIZE,
-        BATCHES_PER_UPDATE=BATCHES_PER_UPDATE,
-        UPDATE_SIZE=UPDATE_SIZE,
-        UPDATES_PER_EPOCH=UPDATES_PER_EPOCH,
-        VALID_BATCHES_PER_EPOCH=VALID_BATCHES_PER_EPOCH
+        batch_size_per_replica=BATCH_SIZE_PER_REPLICA,
+        batch_size=BATCH_SIZE,
+        batches_per_update=BATCHES_PER_UPDATE,
+        update_size=UPDATE_SIZE,
+        updates_per_epoch=UPDATES_PER_EPOCH,
+        valid_batches_per_epoch=VALID_BATCHES_PER_EPOCH,
+        # BATCH_SIZE_PER_REPLICA=BATCH_SIZE_PER_REPLICA,
+        # BATCH_SIZE=BATCH_SIZE,
+        # BATCHES_PER_UPDATE=BATCHES_PER_UPDATE,
+        # UPDATE_SIZE=UPDATE_SIZE,
+        # UPDATES_PER_EPOCH=UPDATES_PER_EPOCH,
+        # VALID_BATCHES_PER_EPOCH=VALID_BATCHES_PER_EPOCH
     )
 
 
