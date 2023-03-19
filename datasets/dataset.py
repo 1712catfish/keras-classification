@@ -57,7 +57,7 @@ def tfrecord_dataset(
 def single_class_tfrec_ds(
         train_tfrec_files,
         num_classes,
-        test_tfrec_files=None,
+        val_tfrec_files=None,
         train_n_samples=None,
         test_n_samples=None,
         train_image_size=224,
