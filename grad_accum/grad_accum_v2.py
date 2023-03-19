@@ -158,7 +158,7 @@ def set_routines(
         def train_step_1_epoch(data_iter):
 
             for _ in tf.range(updates_per_epoch):
-                strategy.experimental_run_v2(train_step_1_update, next(data_iter))
+                strategy.run(train_step_1_update, next(data_iter))
 
         @tf.function
         def valid_step(data_iter):
@@ -173,7 +173,7 @@ def set_routines(
                 valid_loss.update_state(loss)
 
             for _ in tf.range(valid_batches_per_epoch):
-                strategy.experimental_run_v2(valid_step_fn, next(data_iter))
+                strategy.run(valid_step_fn, next(data_iter))
 
     return train_step_1_epoch, valid_step
 
