@@ -97,11 +97,11 @@ def single_class_tfrec_ds(
         augment_batch=augment_batch,
     )
 
-    if test_tfrec_files is None:
+    if val_tfrec_files is None:
         return train_ds
 
     val_ds = tfrecord_dataset(
-        test_tfrec_files,
+        val_tfrec_files,
         parse_fn=lambda example: parse_record_fn(example, test_image_size),
         repeat=True,
         cache=True,
