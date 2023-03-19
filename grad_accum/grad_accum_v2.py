@@ -194,8 +194,8 @@ def train_grad_accum(
         batches_per_update=batches_per_update,
     )
 
-    UPDATES_PER_EPOCH = batch_configuration["UPDATES_PER_EPOCH"]
-    VALID_BATCHES_PER_EPOCH = batch_configuration["VALID_BATCHES_PER_EPOCH"]
+    UPDATES_PER_EPOCH = batch_configuration["updates_per_epoch"]
+    VALID_BATCHES_PER_EPOCH = batch_configuration["valid_batches_per_epoch"]
 
     train_step_1_epoch, valid_step = set_routines(
         strategy=strategy,
