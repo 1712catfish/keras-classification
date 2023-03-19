@@ -226,6 +226,8 @@ def train_grad_accum(
     for step_i in range(steps):
         s = datetime.datetime.now()
 
+        print("step: {} at {}".format(step_i + 1, s.strftime("%Y-%m-%d %H:%M:%S")))
+
         try:
             train_data = next(train_data_iter)
         except StopIteration:
@@ -243,8 +245,7 @@ def train_grad_accum(
         loss = train_loss.result() / UPDATES_PER_EPOCH
         acc = train_accuracy.result()
 
-        print("epoch: {}".format(step_i + 1))
-
+        print("step: {}".format(step_i + 1))
         print("train loss: {}".format(loss))
         print("train accuracy: {}".format(acc))
 

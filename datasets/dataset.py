@@ -56,7 +56,7 @@ def tfrecord_dataset(
 
 def single_class_tfrec_ds(
         train_tfrec_files,
-        classes,
+        num_classes,
         test_tfrec_files=None,
         train_n_samples=None,
         test_n_samples=None,
@@ -78,7 +78,7 @@ def single_class_tfrec_ds(
         image = tf.image.resize(image, [imsize, imsize])
         image = tf.cast(image, tf.float32) / 255.
 
-        label = tf.one_hot(example["label"], classes)
+        label = tf.one_hot(example["label"], num_classes)
         return image, label
 
     if parse_record_fn == "default":
