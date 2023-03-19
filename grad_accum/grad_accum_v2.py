@@ -155,14 +155,12 @@ def set_routines(
             optimizer.apply_gradients(zip(accumulated_grads, model.trainable_variables))
 
         @tf.function
-        def train_step_1_epoch(data_iter):
-
+        def train_step_1_epoch(train_data):
             for _ in tf.range(updates_per_epoch):
-                strategy.run(train_step_1_update, next(data_iter))
+                strategy.run(train_step_1_update, train_data)
 
         @tf.function
-        def valid_step(data_iter):
-
+        def valid_step(val_data):
             def valid_step_fn(images, labels):
                 probabilities = model(images, training=False)
                 per_example_loss = loss_fn(labels, probabilities)
@@ -173,7 +171,7 @@ def set_routines(
                 valid_loss.update_state(loss)
 
             for _ in tf.range(valid_batches_per_epoch):
-                strategy.run(valid_step_fn, next(data_iter))
+                strategy.run(valid_step_fn, val_data)
 
     return train_step_1_epoch, valid_step
 
@@ -181,7 +179,7 @@ def set_routines(
 def train_grad_accum(
         *,
         strategy, model, loss_fn, optimizer,
-        train_ds, val_ds, train_n_samples, val_n_samples,
+        train_n_samples, val_n_samples, get_ds,
         train_accuracy, train_loss, valid_accuracy, valid_loss,
         batch_size_per_replica, batches_per_update,
         steps,
@@ -197,6 +195,9 @@ def train_grad_accum(
 
     UPDATES_PER_EPOCH = batch_configuration["updates_per_epoch"]
     VALID_BATCHES_PER_EPOCH = batch_configuration["valid_batches_per_epoch"]
+    UPDATES_SIZE = batch_configuration["updates_size"]
+
+    train_ds, val_ds = get_ds(batch_size=UPDATES_SIZE)
 
     train_step_1_epoch, valid_step = set_routines(
         strategy=strategy,
@@ -215,10 +216,29 @@ def train_grad_accum(
         update_size=batch_configuration["update_size"],
     )
 
+
+    train_dist_ds = strategy.experimental_distribute_dataset(train_ds)
+    train_data_iter = iter(train_dist_ds)
+
+    valid_dist_ds = strategy.experimental_distribute_dataset(val_ds)
+    valid_data_iter = iter(valid_dist_ds)
+
     for step_i in range(steps):
         s = datetime.datetime.now()
 
-        train_step_1_epoch(train_ds)
+        try:
+            train_data = next(train_data_iter)
+        except StopIteration:
+            train_data_iter = iter(train_dist_ds)
+            train_data = next(train_data_iter)
+
+        try:
+            val_data = next(valid_data_iter)
+        except StopIteration:
+            valid_data_iter = iter(valid_dist_ds)
+            val_data = next(valid_data_iter)
+
+        train_step_1_epoch(train_data)
 
         loss = train_loss.result() / UPDATES_PER_EPOCH
         acc = train_accuracy.result()
@@ -234,7 +254,7 @@ def train_grad_accum(
         e = datetime.datetime.now()
         print("elapsed: {}".format((e - s).total_seconds()))
 
-        valid_step(val_ds)
+        valid_step(val_data)
 
         val_loss = valid_loss.result() / VALID_BATCHES_PER_EPOCH
         val_acc = valid_accuracy.result()
