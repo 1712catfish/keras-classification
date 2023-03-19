@@ -172,24 +172,24 @@ def set_routines(
     return train_step_1_epoch, valid_step
 
 
-def train(
+def train_grad_accum(
         *,
         strategy, model, loss_fn, optimizer,
-        train_ds, val_ds, n_train_samples, n_val_samples,
+        train_ds, val_ds, train_n_samples, val_n_samples,
         train_accuracy, train_loss, valid_accuracy, valid_loss,
         batch_size_per_replica, batches_per_update,
         steps, steps_per_epoch=None
 ):
     batch_configuration = get_batch_config(
         strategy=strategy,
-        n_train_samples=n_train_samples,
-        n_val_samples=n_val_samples,
+        n_train_samples=train_n_samples,
+        n_val_samples=val_n_samples,
         batch_size_per_replica=batch_size_per_replica,
         batches_per_update=batches_per_update,
     )
 
-    UPDATES_PER_EPOCH = batch_configuration["updates_per_epoch"]
-    VALID_BATCHES_PER_EPOCH = batch_configuration["valid_batches_per_epoch"]
+    UPDATES_PER_EPOCH = batch_configuration["UPDATES_PER_EPOCH"]
+    VALID_BATCHES_PER_EPOCH = batch_configuration["VALID_BATCHES_PER_EPOCH"]
 
     train_step_1_epoch, valid_step = set_routines(
         strategy=strategy,
