@@ -274,3 +274,18 @@ def display_result(history, model, i=0):
     plt.xlabel('epoch')
     plt.legend(['train', 'test'], loc='upper left')
     plt.show()
+
+
+def inspect_distribution(m):
+    from keract import get_activations
+
+    image = tf.random.normal(128, 380, 380, 3, mean=0.5, stddev=0.5)
+
+    for layer in m.layers:
+        act = get_activations(
+            m, image,
+            layer_names=layer.name,
+            output_format='simple',
+            nested=True,
+            auto_compile=True
+        )

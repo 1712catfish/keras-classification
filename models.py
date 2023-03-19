@@ -67,6 +67,8 @@ class AGCModel(tf.keras.Model):
         return self.model(inputs)
 
 
+
+
 class SAMModelWithAGC(tf.keras.Model):
     """
     Arxiv article: [Sharpness-Aware Minimization for Efficiently Improving Generalization](https://arxiv.org/pdf/2010.01412.pdf)
